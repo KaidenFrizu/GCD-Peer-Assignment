@@ -47,6 +47,8 @@ The file `run_analysis.R` contains several functions that is used to create a ti
 * `mean_sd_summary()` - creates a mean summary grouped by Activity and Subject
 * `activity_sub()` - Performs lookup in Activity column
 
+Requirement: This project requires `dplyr` installed in your system. To resolve some technical issues, install the library first before running `run_analysis.R`.
+
 If you want a quick run of the functions, source the file `run_analysis.R` and type `simulation_analysis()` in which it makes the variables and performs the functions for you. Make sure to set your working directory first to **GCD-Peer-Assignment-master** folder (or any other folder) before doing this.
 
 When the simulation is finished, there are two tables created that contains tidy data (These tables can be manually assigned to a variable if you didn't run the simulation). They are called `Dataset` and `Dataset_summary` for the purpose of simulation.
