@@ -16,18 +16,30 @@ datacheck <- function(DataFileName = "Data.zip") {
 }
 
 dataextract <- function(datazip = "Data.zip") {
-    unzip(zipfile =  datazip, files = "UCI HAR Dataset/train/X_train.txt")
-    unzip(zipfile =  datazip, files = "UCI HAR Dataset/train/y_train.txt")
-    unzip(zipfile =  datazip, files = "UCI HAR Dataset/train/subject_train.txt")
-    unzip(zipfile =  datazip, files = "UCI HAR Dataset/test/X_test.txt")
-    unzip(zipfile =  datazip, files = "UCI HAR Dataset/test/y_test.txt")
-    unzip(zipfile =  datazip, files = "UCI HAR Dataset/test/subject_test.txt")
-    Sys.sleep(2)
+    unzip(zipfile =  datazip, files = c("UCI HAR Dataset/train/X_train.txt",
+                                        "UCI HAR Dataset/train/y_train.txt",
+                                        "UCI HAR Dataset/train/subject_train.txt",
+                                        "UCI HAR Dataset/test/X_test.txt",
+                                        "UCI HAR Dataset/test/y_test.txt",
+                                        "UCI HAR Dataset/test/subject_test.txt",
+                                        "UCI HAR Dataset/features.txt"))
     message("Files extracted successfully")
 }
 
+mean_sd_find <- function() {
+    dataframe <- read.table("UCI HAR Dataset/features.txt")
+    dataframe2 <- filter(dataframe, grepl("mean()", V2))
+    dataframe3 <- filter(dataframe, grepl("std()", V2))
+    dataframe4 <- rbind(dataframe2, dataframe3)
+    dataframe4 <- dataframe4[order(dataframe4$V1),]
+    names(dataframe4) <- c("Code","Description")
+    listnum <<- dataframe4$Code
+    dataframe4$Code <- paste0("V", dataframe4$Code)
+    modfeature <<- dataframe4
+}
+
 train_tidy <- function() {
-    mean_sd_data <- read.table(file = "./UCI HAR Dataset/train/X_train.txt", header = FALSE)[,1:6]
+    mean_sd_data <- read.table(file = "./UCI HAR Dataset/train/X_train.txt", header = FALSE)[,listnum]
     activity_train <- read.table(file = "./UCI HAR Dataset/train/y_train.txt", header = FALSE)
     names(activity_train) <- "Activity"
     subject_train <- read.table(file = "./UCI HAR Dataset/train/subject_train.txt", header = FALSE)
@@ -38,7 +50,7 @@ train_tidy <- function() {
 }
 
 test_tidy <- function() {
-    mean_sd_data <- read.table(file = "./UCI HAR Dataset/test/X_test.txt", header = FALSE)[,1:6]
+    mean_sd_data <- read.table(file = "./UCI HAR Dataset/test/X_test.txt", header = FALSE)[,listnum]
     activity_test <- read.table(file = "./UCI HAR Dataset/test/y_test.txt", header = FALSE)
     names(activity_test) <- "Activity"
     subject_test <- read.table(file = "./UCI HAR Dataset/test/subject_test.txt", header = FALSE)
