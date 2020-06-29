@@ -1,18 +1,12 @@
 datacheck <- function(DataFileName = "Data.zip") {
-    if(!file.exists("Data.zip")) {
-        fileurl <- "http://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-        message("Downloading file... Please wait")
-        download.file(url = fileurl, destfile = DataFileName, quiet = TRUE)
-        downloaddate <<- Sys.time() #Checking download time
-        message(paste("Date Downloaded:",downloaddate))
-        message(paste("Filename:",DataFileName))
-        Sys.sleep(2)
-        message("File downloaded successfully")
-    }
-    else {
-        if (exists("downloaddate")) message(paste("Date Downloaded:",downloaddate))
-        message("File already exists")
-    }
+    fileurl <- "http://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+    message("Downloading file... Please wait")
+    download.file(url = fileurl, destfile = DataFileName)
+    downloaddate <<- Sys.time() #Checking download time
+    message(paste("Date Downloaded:",downloaddate))
+    message(paste("Filename:",DataFileName))
+    Sys.sleep(2)
+    message("File downloaded successfully")
 }
 
 dataextract <- function(datazip = "Data.zip") {
@@ -22,20 +16,23 @@ dataextract <- function(datazip = "Data.zip") {
                                         "UCI HAR Dataset/test/X_test.txt",
                                         "UCI HAR Dataset/test/y_test.txt",
                                         "UCI HAR Dataset/test/subject_test.txt",
-                                        "UCI HAR Dataset/features.txt"))
+                                        "UCI HAR Dataset/features.txt",
+                                        "UCI HAR Dataset/activity_labels.txt"))
     message("Files extracted successfully")
 }
 
 mean_sd_find <- function() {
+    require(dplyr) #Requires dplyr
     dataframe <- read.table("UCI HAR Dataset/features.txt")
-    dataframe2 <- filter(dataframe, grepl("mean()", V2))
-    dataframe3 <- filter(dataframe, grepl("std()", V2))
+    dataframe2 <- filter(dataframe, grepl("-mean()", V2))
+    dataframe3 <- filter(dataframe, grepl("-std()", V2))
     dataframe4 <- rbind(dataframe2, dataframe3)
     dataframe4 <- dataframe4[order(dataframe4$V1),]
     names(dataframe4) <- c("Code","Description")
     listnum <<- dataframe4$Code
     dataframe4$Code <- paste0("V", dataframe4$Code)
     modfeature <<- dataframe4
+    message("The following variables were created: listnum, modfeature")
 }
 
 train_tidy <- function() {
@@ -68,9 +65,44 @@ autobind <- function() {
     result
 }
 
+activity_sub <- function(dataframe) {
+    lookup <- read.table("UCI HAR Dataset/activity_labels.txt")
+    names(lookup) <- c("Activity", "Description")
+    df <- as.data.frame(dataframe$Activity)
+    names(df) <- ("Activity")
+    df2 <- merge(df,lookup)
+    dataframe$Activity <- df2$Description
+    dataframe
+}
+
 mean_sd_summary <- function(dataframe) {
     dataframe <- aggregate(. ~ Subject + Activity, data = dataframe, FUN = mean)
     dataframe$Activity <- as.factor(dataframe$Activity)
     dataframe$Subject <- as.factor(dataframe$Subject)
+    message("Data set has been created")
     dataframe
+}
+
+simulation_analysis <- function() {
+    Sys.sleep(2)
+    message("Processing: datacheck()")
+    datacheck()
+    Sys.sleep(2)
+    message("Processing: dataextract()")
+    dataextract()
+    Sys.sleep(2)
+    message("Processing: mean_sd_find()")
+    mean_sd_find()
+    Sys.sleep(2)
+    message("Processing: autobind()")
+    Dataset <<- autobind()
+    Sys.sleep(2)
+    message("Processing: mean_sd_summary()")
+    Dataset_summary <<- mean_sd_summary(Dataset)
+    Sys.sleep(2)
+    message("Processing: activity_sub()")
+    Dataset <<- activity_sub(Dataset)
+    Dataset_summary <<- activity_sub(Dataset_summary)
+    Sys.sleep(2)
+    message("Simulation finished")
 }
