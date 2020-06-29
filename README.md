@@ -49,7 +49,7 @@ The file `run_analysis.R` contains several functions that is used to create a ti
 
 If you want a quick run of the functions, source the file `run_analysis.R` and type `simulation_analysis()` in which it makes the variables and performs the functions for you. Make sure to set your working directory first to **GCD-Peer-Assignment-master** folder (or any other folder) before doing this.
 
-When the simulation is finished, there are two tables created that contains tidy data (These tables can be manually assigned to a variable if you didn't run the simulation). They are called `Dataset` and `Dataset_summary`.
+When the simulation is finished, there are two tables created that contains tidy data (These tables can be manually assigned to a variable if you didn't run the simulation). They are called `Dataset` and `Dataset_summary` for the purpose of simulation.
 
 `Dataset` contains the tidy data that is sorted by Activity, Subject, and measurements. However, the columns of the measurements are named as *V1,V2,V3, etc.*. The description of these column names can be found in the variable `modfeature` and the given code book.
 
