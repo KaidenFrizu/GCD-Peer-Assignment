@@ -1,3 +1,5 @@
+require(dplyr) #Requires dplyr
+
 datacheck <- function(DataFileName = "Data.zip") {
     fileurl <- "http://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
     message("Downloading file... Please wait")
@@ -22,7 +24,6 @@ dataextract <- function(datazip = "Data.zip") {
 }
 
 mean_sd_find <- function() {
-    require(dplyr) #Requires dplyr
     dataframe <- read.table("UCI HAR Dataset/features.txt")
     dataframe2 <- filter(dataframe, grepl("-mean()", V2))
     dataframe3 <- filter(dataframe, grepl("-std()", V2))
@@ -33,6 +34,29 @@ mean_sd_find <- function() {
     dataframe4$Code <- paste0("V", dataframe4$Code)
     modfeature <<- dataframe4
     message("The following variables were created: listnum, modfeature")
+}
+
+column_gsub <- function() {
+    
+    repfunc <- function(oldname, newname, case = FALSE) {
+        gsub(oldname, newname, modfeature$Description, ignore.case = case)
+    }
+    #List of keywords to be subsituted
+    modfeature$Description <<- repfunc("^t","time.")
+    modfeature$Description <<- repfunc("Body","body.")
+    modfeature$Description <<- repfunc("Acc","accelerometer.")
+    modfeature$Description <<- repfunc("-mean()","mean.")
+    modfeature$Description <<- repfunc("-std()","SD.")
+    modfeature$Description <<- repfunc("Gravity","gravity.")
+    modfeature$Description <<- repfunc("Jerk","jerk.")
+    modfeature$Description <<- repfunc("Gyro","gyroscope.")
+    modfeature$Description <<- repfunc("Mag","magnitude.")
+    modfeature$Description <<- repfunc("^f","fast.fourier.transform.")
+    modfeature$Description <<- repfunc("-meanFreq()","mean.frequency.")
+    modfeature$Description <<- repfunc("body.body.","body.")
+    modfeature$Description <<- repfunc(")-X$","x-axis)")
+    modfeature$Description <<- repfunc(")-Y$","y-axis)")
+    modfeature$Description <<- repfunc(")-Z$","z-axis)")
 }
 
 train_tidy <- function() {
@@ -93,6 +117,9 @@ simulation_analysis <- function() {
     Sys.sleep(2)
     message("Processing: mean_sd_find()")
     mean_sd_find()
+    Sys.sleep(2)
+    message("Processing: column_gsub()")
+    column_gsub()
     Sys.sleep(2)
     message("Processing: autobind()")
     Dataset <<- autobind()

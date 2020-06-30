@@ -43,6 +43,7 @@ The file `run_analysis.R` contains several functions that is used to create a ti
 * `datacheck()` - downloads the untidy data in zip file
 * `dataextract()` - extracts the required data in the zip file
 * `mean_sd_find()` - locates the required columns which are related to mean() and std()
+* `column_gsub` - substitutes keywords to make a clearer column descriptions in code book
 * `autobind()` - creates tidy data sets for train and test data and binds them together
 * `mean_sd_summary()` - creates a mean summary grouped by Activity and Subject
 * `activity_sub()` - Performs lookup in Activity column
