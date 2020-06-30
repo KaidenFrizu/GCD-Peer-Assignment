@@ -6,7 +6,9 @@ Here are the following codes that is used for reference in the tidy data. This i
 
 ### Measurement Variable Code 
 
-The table above corresponds to the description of column names found in the tidy data set. You can find the table in the pdf version, `Code-Book.pdf`, found in this repository.
+The table corresponds to the description of column names found in the tidy data set. You can find the table in the pdf version, `Code-Book.pdf`, of this code book found in this repository.
+
+*Sadly, the table doesn't appear correctly on .md files*
 
 ***
 
